@@ -25,6 +25,7 @@ setup(name='carpi-obddaemon',
       license='MIT',
       packages=['obddaemon'],
       install_requires=[
+          'obd',
           'wheel'
       ],
       zip_safe=False,
