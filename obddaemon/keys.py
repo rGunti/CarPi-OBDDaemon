@@ -13,6 +13,7 @@ def build_key(type, name):
     return "{}{}{}".format(type, KEY_BASE, name)
 
 
+KEY_VOLTAGE = build_key(TypedBusListener.TYPE_PREFIX_FLOAT, "voltage")
 KEY_FUEL_STATUS = build_key(TypedBusListener.TYPE_PREFIX_INT, "fuel_status")
 KEY_COOLANT_TEMP = build_key(TypedBusListener.TYPE_PREFIX_INT, "coolant_temp")
 KEY_INTAKE_PRESSURE = build_key(TypedBusListener.TYPE_PREFIX_INT, "intake_pressure")
@@ -22,6 +23,7 @@ KEY_INTAKE_TEMP = build_key(TypedBusListener.TYPE_PREFIX_INT, "temperature")
 
 
 ALL_KEYS = [
+    KEY_VOLTAGE,
     KEY_FUEL_STATUS,
     KEY_COOLANT_TEMP,
     KEY_INTAKE_PRESSURE,
