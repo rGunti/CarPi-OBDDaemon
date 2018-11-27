@@ -86,7 +86,7 @@ class Entry:
                 or v_type == Entry.TYPE_INTAKE_TEMP:
             return int(v)
         elif v_type == Entry.TYPE_RPM:
-            return float(v)
+            return int(float(v))
         else:
             return None
 
