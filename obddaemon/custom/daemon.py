@@ -98,7 +98,9 @@ class SerialObdDaemon(Daemon):
                                 v = self.send_and_wait(ser, c)
                                 p = parse_obj({c: v})
                                 d[c] = p[c]
-                            pprint(d)
+
+                            if self._get_config_bool('Console', 'DoPprint', False):
+                                pprint(d)
                             sleep(0.5)
                     except (KeyboardInterrupt, SystemExit) as e:
                         log.info("Terminating connection upon user request")
