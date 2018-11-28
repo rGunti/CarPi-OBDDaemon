@@ -4,9 +4,12 @@ CARPI OBD II DAEMON
 Licensed under MIT
 """
 from logging import Logger
+from math import isnan
 from os.path import exists
 from pprint import pprint
 from time import sleep
+
+import obddaemon.keys as ObdKeys
 
 from carpicommons.log import logger
 from daemoncommons.daemon import Daemon
@@ -29,12 +32,21 @@ class SerialObdDaemon(Daemon):
     FETCH_SEQUENCE = [
         'ATRV',  # Battery Voltage
         '0103',  # Fuel System
-        '0105',  # Engine Coolant Temp
+        # '0105',  # Engine Coolant Temp
         '010B',  # Intake MAP
         '010C',  # RPM
         '010D',  # Speed
         '010F'   # Intake Air Temp
     ]
+
+    OBD_MAPPING = {
+        'ATRV': ObdKeys.KEY_VOLTAGE,
+        '0103': ObdKeys.KEY_FUEL_STATUS,
+        '010B': ObdKeys.KEY_INTAKE_PRESSURE,
+        '010C': ObdKeys.KEY_RPM,
+        '010D': ObdKeys.KEY_SPEED,
+        '010F': ObdKeys.KEY_INTAKE_TEMP
+    }
 
     def __init__(self):
         super().__init__("SerOBD Daemon")
@@ -54,7 +66,7 @@ class SerialObdDaemon(Daemon):
         self._log = log = logger(self.name)
         log.info("Starting up %s ...", self.name)
 
-        self._bus = self._build_bus_writer()
+        self._bus = bus = self._build_bus_writer()
 
         device = self._get_config('OBD', 'Path', None)
         baudrate = self._get_config_int('OBD', 'Baudrate', 9600)
@@ -98,6 +110,10 @@ class SerialObdDaemon(Daemon):
                                 v = self.send_and_wait(ser, c)
                                 p = parse_obj({c: v})
                                 d[c] = p[c]
+
+                                val = d[c]
+                                if val is not None and not isnan(val):
+                                    bus.publish(SerialObdDaemon.OBD_MAPPING[c], d[c])
 
                             if self._get_config_bool('Console', 'DoPprint', False):
                                 pprint(d)
