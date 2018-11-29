@@ -139,7 +139,7 @@ def parse_atrv(v):
     try:
         return float(v.replace('V', ''))
     except ValueError:
-        return float('nan')
+        return None
 
 
 def parse_0101(v):
@@ -210,7 +210,7 @@ def parse_0104(v):
         val = int(trim_obd_value(v), 16)
         return val / 2.55
     except ValueError:
-        return float('nan')
+        return None
 
 
 def parse_010b(v):
@@ -222,7 +222,7 @@ def parse_010b(v):
     try:
         return int(trim_obd_value(v), 16)
     except ValueError:
-        return float('nan')
+        return None
 
 
 def parse_010c(v):
@@ -235,7 +235,7 @@ def parse_010c(v):
         val = int(trim_obd_value(v), 16)
         return val / 4
     except ValueError:
-        return float('nan')
+        return None
 
 
 def parse_010d(v):
@@ -247,7 +247,7 @@ def parse_010d(v):
     try:
         return int(trim_obd_value(v), 16)
     except ValueError:
-        return float('nan')
+        return None
 
 
 def parse_010f(v):
@@ -260,7 +260,7 @@ def parse_010f(v):
         val = int(trim_obd_value(v), 16)
         return val - 40
     except ValueError:
-        return float('nan')
+        return None
 
 
 def parse_0134_013b(v):
@@ -277,7 +277,7 @@ def parse_0134_013b(v):
         val_cd = int(trim_val[2:4], 16)
         return (2 / 65536) * val_ab, val_cd - 128
     except ValueError:
-        return float('nan'), float('nan')
+        return None, None
 
 
 PARSER_MAP = {

@@ -112,8 +112,8 @@ class SerialObdDaemon(Daemon):
                                 d[c] = p[c]
 
                                 val = d[c]
-                                if val is not None and not isnan(val):
-                                    bus.publish(SerialObdDaemon.OBD_MAPPING[c], d[c])
+                                if val is not None:
+                                    bus.publish(SerialObdDaemon.OBD_MAPPING[c], val)
 
                             if self._get_config_bool('Console', 'DoPprint', False):
                                 pprint(d)
