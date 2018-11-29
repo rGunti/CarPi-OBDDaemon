@@ -9,12 +9,14 @@ from os.path import exists
 from pprint import pprint
 from time import sleep
 
+from carpicommons.errors import CarPiExitException
+
 import obddaemon.keys as ObdKeys
 
 from carpicommons.log import logger
 from daemoncommons.daemon import Daemon
 from redisdatabus.bus import BusWriter
-from serial import Serial
+from serial import Serial, SerialException
 
 import obddaemon.custom.errors as errors
 from obddaemon.custom.Obd2DataParser import parse_obj, parse_value
@@ -124,8 +126,10 @@ class SerialObdDaemon(Daemon):
                         raise e
 
                 self._serial = None
-            except errors.SerialObdError as e:
+            except CarPiExitException as e:
                 raise e
+            except SerialException as e:
+                log.error("Serial connection error")
             except Exception as e:
                 log.error("Error while communicating with Serial device", e)
 
