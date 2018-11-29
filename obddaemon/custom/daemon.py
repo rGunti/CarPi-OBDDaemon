@@ -17,7 +17,7 @@ from redisdatabus.bus import BusWriter
 from serial import Serial
 
 import obddaemon.custom.errors as errors
-from obddaemon.custom.Obd2DataParser import parse_obj
+from obddaemon.custom.Obd2DataParser import parse_obj, parse_value
 
 
 class SerialObdDaemon(Daemon):

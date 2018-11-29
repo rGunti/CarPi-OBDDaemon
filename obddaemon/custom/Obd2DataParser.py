@@ -65,22 +65,22 @@ def trim_obd_value(v):
         return v[4:]
 
 
-def prepare_value(v):
-    """
-    :param str v:
-    :return str:
-    """
-    log.debug('Preparing value {}'.format(v))
-    a = v.split('|')
-    if len(a) >= 2 and a[1] != '>':
-        log.debug('Returning {} for {}'.format(a[1], v))
-        return a[1]
-    else:
-        log.debug('Returning NONE for {}'.format(v))
-        return None
+# def prepare_value(v):
+#     """
+#     :param str v:
+#     :return str:
+#     """
+#     log.debug('Preparing value {}'.format(v))
+#     a = v.split('|')
+#     if len(a) >= 2 and a[1] != '>':
+#         log.debug('Returning {} for {}'.format(a[1], v))
+#         return a[1]
+#     else:
+#         log.debug('Returning NONE for {}'.format(v))
+#         return None
 
 
-def parse_value(type, val):
+def parse_value(type: str, val: str):
     """
     Parses a given OBD value of a given type (PID)
     and returns the parsed value.
@@ -90,10 +90,10 @@ def parse_value(type, val):
     :param val:
     :return:
     """
-    if type in PARSER_MAP:
-        prep_val = prepare_value(val)
-        out = PARSER_MAP[type](prep_val)
-        log.debug('For {} entered {}, got {} out'.format(type, prep_val, out))
+    if type.upper() in PARSER_MAP:
+        #prep_val = prepare_value(val)
+        out = PARSER_MAP[type](val)
+        log.debug('For {} entered {}, got {} out'.format(type, val, out))
         return out
     else:
         raise ObdPidParserUnknownError(type, val)
