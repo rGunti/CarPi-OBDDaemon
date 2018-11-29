@@ -225,15 +225,15 @@ def parse_010b(v):
         return None
 
 
-def parse_010c(v):
+def parse_010c(v) -> int:
     """
     Parses Engine RPM and returns it in [RPM] as a float from 0 - 16383.75
     :param str v:
-    :return float:
+    :return int:
     """
     try:
         val = int(trim_obd_value(v), 16)
-        return val / 4
+        return int(val / 4)
     except ValueError:
         return None
 
