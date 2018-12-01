@@ -10,7 +10,7 @@ with open('README.md', 'r') as f:
     long_description = f.read()
 
 setup(name='carpi-obddaemon',
-      version='0.3.1',
+      version='0.4.0',
       description='OBD II Daemon (developed for CarPi)',
       long_description=long_description,
       url='https://github.com/rGunti/CarPi-OBDDaemon',
