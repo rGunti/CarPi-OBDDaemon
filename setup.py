@@ -10,7 +10,7 @@ with open('README.md', 'r') as f:
     long_description = f.read()
 
 setup(name='carpi-obddaemon',
-      version='0.2.1',
+      version='0.3.1',
       description='OBD II Daemon (developed for CarPi)',
       long_description=long_description,
       url='https://github.com/rGunti/CarPi-OBDDaemon',
@@ -23,7 +23,10 @@ setup(name='carpi-obddaemon',
       author='Raphael "rGunti" Guntersweiler',
       author_email='raphael@rgunti.ch',
       license='MIT',
-      packages=['obddaemon'],
+      packages=[
+          'obddaemon',
+          'obddaemon.custom'
+      ],
       install_requires=[
           'obd',
           'wheel'

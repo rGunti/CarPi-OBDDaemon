@@ -26,7 +26,7 @@ class ObdDaemon(Daemon):
     def __init__(self):
         super().__init__("OBD II Daemon")
         self._log: Logger = None
-        self._obd: Async = None
+        self._obd: OBD = None
         self._bus: BusWriter = None
         self._running = False
         self._missing_data_counter = 0
@@ -46,7 +46,7 @@ class ObdDaemon(Daemon):
 
         retries = 5
 
-        self._bus = bus = self._build_bus_writer()
+        self._bus = self._build_bus_writer()
         cmds = [
             #(commands.ELM_VOLTAGE, self._create_callback(keys.KEY_VOLTAGE)),
             (commands.FUEL_STATUS, self._create_callback(keys.KEY_FUEL_STATUS)),
@@ -62,14 +62,36 @@ class ObdDaemon(Daemon):
 
         while retries > 0:
             log.info("Connecting to OBD II interface ...")
+
+            port = self._get_config('OBD', 'Port', None)
+            baudrate = self._get_config_int('OBD', 'Baudrate', None)
+            fast_init = self._get_config_bool('OBD', 'FastInit', True)
+            timeout = self._get_config_float('OBD', 'Timeout', 1)
+
+            if port:
+                log.debug("Connecting to %s", port)
+            else:
+                log.debug("Using Autodetect to find OBD device")
+
             if use_async:
                 log.debug("Using Async instance")
-                self._obd = obd_inst = Async()
+                log.warning("Async can DOS your car! Use it at your own risk!")
+                log.warning("OBD.StopAfterXEmptyFrames is not supported under Async mode.")
+                self._obd = obd_inst = Async(portstr=port,
+                                             baudrate=baudrate,
+                                             fast=fast_init,
+                                             timeout=timeout)
             else:
                 log.debug("Using manual instance")
-                self._obd = obd_inst = OBD()
+                self._obd = obd_inst = OBD(portstr=port,
+                                           baudrate=baudrate,
+                                           fast=fast_init,
+                                           timeout=timeout)
 
             if obd_inst.is_connected():
+                log.debug("Connected via %s using %s",
+                          obd_inst.port_name(),
+                          obd_inst.protocol_name())
                 log.info("Setting up data fetcher ...")
                 if use_async:
                     for cmd in cmds:
@@ -144,7 +166,9 @@ class ObdDaemon(Daemon):
         self._running = False
 
         if self._obd and self._obd.is_connected():
+            if self._log:
+                self._log.info("Terminating OBD II connection ...")
+
             if self._obd is Async:
-                if self._log:
-                    self._log.info("Terminating OBD II connection ...")
                 self._obd.stop()
+            self._obd.close()
